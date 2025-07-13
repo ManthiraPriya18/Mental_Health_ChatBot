@@ -1,0 +1,32 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mental Health Chatbot</title>
+    <style>
+        body { font-family: Arial; max-width: 700px; margin: auto; padding-top: 40px; }
+        textarea { width: 100%; padding: 10px; }
+        input[type="submit"] { padding: 10px 20px; margin-top: 10px; }
+        .chatbox { margin-top: 30px; }
+        .user { color: blue; font-weight: bold; }
+        .bot { color: green; font-weight: bold; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h2>Mental Health Assistance - Chat</h2>
+    <form method="POST">
+        <textarea name="user_input" rows="4" placeholder="How are you feeling?">{{ user_input }}</textarea><br>
+        <input type="submit" value="Send">
+    </form>
+
+    <div class="chatbox">
+        {% if user_input %}
+        <p class="user">You: {{ user_input }}</p>
+        {% endif %}
+
+        {% if bot_response %}
+        <p class="bot">Bot: {{ bot_response }}</p>
+        {% endif %}
+    </div>
+</body>
+</html>
