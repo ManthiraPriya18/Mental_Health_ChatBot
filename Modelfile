@@ -1,4 +1,0 @@
-FROM llama3:instruct
-
-ADAPTER ./train/mental-finetune.jsonl
-

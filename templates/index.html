@@ -1,32 +1,44 @@
+<!-- templates/index.html -->
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Mental Health Chatbot</title>
-    <style>
-        body { font-family: Arial; max-width: 700px; margin: auto; padding-top: 40px; }
-        textarea { width: 100%; padding: 10px; }
-        input[type="submit"] { padding: 10px 20px; margin-top: 10px; }
-        .chatbox { margin-top: 30px; }
-        .user { color: blue; font-weight: bold; }
-        .bot { color: green; font-weight: bold; margin-top: 10px; }
-    </style>
+  <meta charset="UTF-8">
+  <title>Mental Health Chatbot</title>
+  <style>
+    body { font-family: Arial; padding: 20px; background: #eef; }
+    #chatbox { width: 100%; max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; }
+    .user { text-align: right; color: blue; margin-top: 10px; }
+    .bot { text-align: left; color: green; margin-top: 10px; }
+    input, button { margin-top: 10px; }
+  </style>
 </head>
 <body>
-    <h2>Mental Health Assistance - Chat</h2>
-    <form method="POST">
-        <textarea name="user_input" rows="4" placeholder="How are you feeling?">{{ user_input }}</textarea><br>
-        <input type="submit" value="Send">
-    </form>
+  <div id="chatbox">
+    <h2>🧠 Mental Health Chatbot</h2>
+    <div id="conversation"></div>
+    <input type="text" id="message" placeholder="Type your message..." />
+    <button onclick="sendMessage()">Send</button>
+  </div>
 
-    <div class="chatbox">
-        {% if user_input %}
-        <p class="user">You: {{ user_input }}</p>
-        {% endif %}
+  <script>
+    async function sendMessage() {
+      const input = document.getElementById("message");
+      const text = input.value.trim();
+      if (!text) return;
 
-        {% if bot_response %}
-        <p class="bot">Bot: {{ bot_response }}</p>
-        {% endif %}
-    </div>
+      const convo = document.getElementById("conversation");
+      convo.innerHTML += `<div class="user"><strong>You:</strong> ${text}</div>`;
+      input.value = "";
+
+      const res = await fetch("/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text })
+      });
+      const data = await res.json();
+      convo.innerHTML += `<div class="bot"><strong>Bot:</strong> ${data.response}</div>`;
+    }
+  </script>
 </body>
 </html>

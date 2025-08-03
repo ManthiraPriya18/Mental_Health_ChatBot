@@ -1,29 +1,19 @@
-from flask import Flask, render_template, request
-import subprocess
+# app.py
+
+from flask import Flask, render_template, request, jsonify
+from chatbot import get_response
 
 app = Flask(__name__)
 
-@app.route("/", methods=["GET", "POST"])
-def chat():
-    user_input = ""
-    bot_response = ""
+@app.route("/")
+def home():
+    return render_template("index.html")
 
-    if request.method == "POST":
-        user_input = request.form["user_input"]
-
-        try:
-            # Use Ollama LLaMA3 model to respond
-            result = subprocess.run(
-                ["ollama", "run", "llama3:instruct", user_input],
-                capture_output=True,
-                text=True,
-                timeout=60
-            )
-            bot_response = result.stdout.strip()
-        except Exception as e:
-            bot_response = f"Error: {str(e)}"
-
-    return render_template("index.html", user_input=user_input, bot_response=bot_response)
+@app.route("/ask", methods=["POST"])
+def ask():
+    user_input = request.json["message"]
+    answer = get_response(user_input)
+    return jsonify({"response": answer})
 
 if __name__ == "__main__":
     app.run(debug=True)
